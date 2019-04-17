@@ -109,7 +109,7 @@ public class Deque<Item> implements Iterable<Item> {
 			if (!hasNext())
 				throw new java.util.NoSuchElementException();
 			else {
-				return removeFirst();
+				return removeLast();
 			}
 		}
 
