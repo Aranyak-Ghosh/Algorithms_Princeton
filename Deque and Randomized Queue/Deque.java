@@ -5,6 +5,7 @@ public class Deque<Item> implements Iterable<Item> {
 
 	private class Node {
 		Node next;
+		Node prev;
 		Item item;
 	}
 
@@ -31,12 +32,11 @@ public class Deque<Item> implements Iterable<Item> {
 			if (top == null) {
 				top = new Node();
 				top.item = item;
-				top.next = null;
 				bottom = top;
 			} else {
 				Node temp = new Node();
 				temp.item = item;
-				temp.next = top;
+				temp.prev = top;
 				top.next = temp;
 				top = temp;
 			}
@@ -50,12 +50,12 @@ public class Deque<Item> implements Iterable<Item> {
 			if (bottom == null) {
 				bottom = new Node();
 				bottom.item = item;
-				bottom.next = null;
 				top = bottom;
 			} else {
 				Node temp = new Node();
 				temp.item = item;
 				temp.next = bottom;
+				bottom.prev = temp;
 				bottom = temp;
 			}
 		} else
@@ -69,8 +69,10 @@ public class Deque<Item> implements Iterable<Item> {
 			if (size == 1) {
 				top = null;
 				bottom = null;
-			} else
-				top = top.next;
+			} else {
+				top = top.prev;
+				top.next = null;
+			}
 			size--;
 			return res;
 		} else
@@ -85,8 +87,10 @@ public class Deque<Item> implements Iterable<Item> {
 			if (size == 1) {
 				top = null;
 				bottom = null;
-			} else
+			} else {
 				bottom = bottom.next;
+				bottom.prev = null;
+			}
 			size--;
 			return res;
 		} else
@@ -117,7 +121,6 @@ public class Deque<Item> implements Iterable<Item> {
 
 	@Override
 	public Iterator<Item> iterator() {
-		// TODO Auto-generated method stub
 		return new DequeIterator();
 	}
 
