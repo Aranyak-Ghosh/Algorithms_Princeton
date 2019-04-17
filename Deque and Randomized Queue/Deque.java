@@ -22,7 +22,7 @@ public class Deque<Item> implements Iterable<Item> {
 	}
 
 	public boolean isEmpty() {
-		return top == null;
+		return size == 0;
 	}
 
 	public void addFirst(Item item) {
@@ -34,10 +34,10 @@ public class Deque<Item> implements Iterable<Item> {
 				top.next = null;
 				bottom = top;
 			} else {
-				top.next = new Node();
-				Node temp = top.next;
+				Node temp = new Node();
 				temp.item = item;
 				temp.next = top;
+				top.next = temp;
 				top = temp;
 			}
 		} else
@@ -53,8 +53,7 @@ public class Deque<Item> implements Iterable<Item> {
 				bottom.next = null;
 				top = bottom;
 			} else {
-				bottom.next = new Node();
-				Node temp = bottom.next;
+				Node temp = new Node();
 				temp.item = item;
 				temp.next = bottom;
 				bottom = temp;
@@ -67,7 +66,12 @@ public class Deque<Item> implements Iterable<Item> {
 		Item res;
 		if (!isEmpty()) {
 			res = top.item;
-			top = top.next;
+			if (size == 1) {
+				top = null;
+				bottom = null;
+			} else
+				top = top.next;
+			size--;
 			return res;
 		} else
 			throw new NoSuchElementException();
@@ -76,8 +80,14 @@ public class Deque<Item> implements Iterable<Item> {
 	public Item removeLast() {
 		Item res;
 		if (!isEmpty()) {
+
 			res = bottom.item;
-			top = top.next;
+			if (size == 1) {
+				top = null;
+				bottom = null;
+			} else
+				bottom = bottom.next;
+			size--;
 			return res;
 		} else
 			throw new NoSuchElementException();
@@ -87,7 +97,7 @@ public class Deque<Item> implements Iterable<Item> {
 
 		@Override
 		public boolean hasNext() {
-			return top != null;
+			return !isEmpty();
 		}
 
 		@Override
