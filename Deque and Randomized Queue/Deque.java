@@ -9,12 +9,12 @@ public class Deque<Item> implements Iterable<Item> {
 		Item item;
 	}
 
-	private Node end, start;
+	private Node last, first;
 	private int size;
 
 	public Deque() {
-		end = null;
-		start = null;
+		last = null;
+		first = null;
 		size = 0;
 	}
 
@@ -29,17 +29,14 @@ public class Deque<Item> implements Iterable<Item> {
 	public void addFirst(Item item) {
 		if (item != null) {
 			size++;
-			if (end == null) {
-				end = new Node();
-				end.item = item;
-				start = end;
-			} else {
-				Node temp = new Node();
-				temp.item = item;
-				temp.next = start;
-				start.prev = temp;
-				start = temp;
-			}
+			Node temp = first;
+			first = new Node();
+			first.item = item;
+			first.next = temp;
+			if (last != null)
+				first.next.prev = first;
+			else
+				last = first;
 		} else
 			throw new java.lang.IllegalArgumentException();
 	}
@@ -47,17 +44,14 @@ public class Deque<Item> implements Iterable<Item> {
 	public void addLast(Item item) {
 		if (item != null) {
 			size++;
-			if (start == null) {
-				start = new Node();
-				start.item = item;
-				end = start;
-			} else {
-				Node temp = new Node();
-				temp.item = item;
-				temp.prev = end;
-				end.next = temp;
-				end = temp;
-			}
+			Node temp = last;
+			last = new Node();
+			last.item = item;
+			last.prev = temp;
+			if (first != null)
+				last.prev.next = last;
+			else
+				first = last;
 		} else
 			throw new java.lang.IllegalArgumentException();
 	}
@@ -65,13 +59,13 @@ public class Deque<Item> implements Iterable<Item> {
 	public Item removeFirst() {
 		Item res;
 		if (!isEmpty()) {
-			res = start.item;
+			res = first.item;
 			if (size == 1) {
-				end = null;
-				start = null;
+				last = null;
+				first = null;
 			} else {
-				start = start.next;
-				start.prev = null;
+				first = first.next;
+				first.prev = null;
 			}
 			size--;
 			return res;
@@ -83,13 +77,13 @@ public class Deque<Item> implements Iterable<Item> {
 		Item res;
 		if (!isEmpty()) {
 
-			res = end.item;
+			res = last.item;
 			if (size == 1) {
-				end = null;
-				start = null;
+				last = null;
+				first = null;
 			} else {
-				end = end.prev;
-				end.next = null;
+				last = last.prev;
+				last.next = null;
 
 			}
 			size--;
@@ -103,7 +97,7 @@ public class Deque<Item> implements Iterable<Item> {
 		private Node current;
 
 		public DequeIterator() {
-			current = start;
+			current = first;
 		}
 
 		public boolean hasNext() {
