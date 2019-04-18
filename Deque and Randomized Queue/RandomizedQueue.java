@@ -76,9 +76,13 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
 	private class RandomizedQueueIterator implements Iterator<Item> {
 
 		private int i;
-
+		private int[] indices;
 		public RandomizedQueueIterator() {
 			i = 0;
+			indices=new int[size];
+			for(int i=0;i<size;i++)
+				indices[i]=i;
+			StdRandom.shuffle(indices);
 		}
 
 		@Override
@@ -93,8 +97,8 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
 
 		@Override
 		public Item next() {
-			if (!isEmpty()) {
-				return arr[i++];
+			if (hasNext()) {
+				return arr[indices[i++]];
 			} else
 				throw new java.util.NoSuchElementException();
 		}
