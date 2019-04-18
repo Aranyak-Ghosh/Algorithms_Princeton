@@ -25,7 +25,8 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
 		else if (size == arr.length)
 			resize(size * 2);
 		arr[size++] = item;
-		swapItem();
+		if (size > 1)
+			swapItem();
 	}
 
 	public Item dequeue() {
@@ -33,11 +34,12 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
 			throw new java.util.NoSuchElementException();
 		else {
 			Item res;
-			int index = StdRandom.uniform(0, size);
+			int index = size - 1;
 			res = arr[index];
 			for (int i = index; i < size - 1; i++)
 				arr[i] = arr[i + 1];
 			size--;
+			arr[size] = null;
 			if (size > 0 && size <= arr.length / 4)
 				resize(arr.length / 2);
 			return res;
