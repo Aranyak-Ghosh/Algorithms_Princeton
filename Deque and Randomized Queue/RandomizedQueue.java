@@ -25,6 +25,7 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
 		else if (size == arr.length)
 			resize(size * 2);
 		arr[size++] = item;
+		swapItem();
 	}
 
 	public Item dequeue() {
@@ -41,6 +42,13 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
 				resize(arr.length / 2);
 			return res;
 		}
+	}
+
+	private void swapItem() {
+		int i = StdRandom.uniform(size);
+		Item temp = arr[i];
+		arr[i] = arr[size - 1];
+		arr[size - 1] = temp;
 	}
 
 	private void resize(int capacity) {
@@ -65,13 +73,15 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
 
 	private class RandomizedQueueIterator implements Iterator<Item> {
 
-		public RandomizedQueueIterator() {
+		private int i;
 
+		public RandomizedQueueIterator() {
+			i = 0;
 		}
 
 		@Override
 		public boolean hasNext() {
-			return !isEmpty();
+			return i < size;
 		}
 
 		@Override
@@ -82,7 +92,7 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
 		@Override
 		public Item next() {
 			if (!isEmpty()) {
-				return sample();
+				return arr[i++];
 			} else
 				throw new java.util.NoSuchElementException();
 		}
@@ -91,7 +101,6 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
 
 	@Override
 	public Iterator<Item> iterator() {
-		// TODO Auto-generated method stub
 		return new RandomizedQueueIterator();
 	}
 
