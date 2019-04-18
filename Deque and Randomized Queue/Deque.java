@@ -99,9 +99,15 @@ public class Deque<Item> implements Iterable<Item> {
 
 	private class DequeIterator implements Iterator<Item> {
 
+		private Node current;
+
+		public DequeIterator() {
+			current = bottom;
+		}
+
 		@Override
 		public boolean hasNext() {
-			return !isEmpty();
+			return current != null;
 		}
 
 		@Override
@@ -109,7 +115,9 @@ public class Deque<Item> implements Iterable<Item> {
 			if (!hasNext())
 				throw new java.util.NoSuchElementException();
 			else {
-				return removeLast();
+				Item res = current.item;
+				current = current.next;
+				return res;
 			}
 		}
 
