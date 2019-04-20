@@ -115,7 +115,7 @@ public class Point implements Comparable<Point> {
 			else if (p0_slope == p1_slope)
 				return 0;
 			else
-				return 1;
+				return -1;
 		}
 
 	}
