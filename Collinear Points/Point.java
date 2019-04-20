@@ -102,6 +102,22 @@ public class Point implements Comparable<Point> {
 		return 1;
 	}
 
+	private class SlopeCompare implements Comparator<Point> {
+
+		@Override
+		public int compare(Point p0, Point p1) {
+			double p0_slope = slopeTo(p0);
+			double p1_slope = slopeTo(p1);
+			if (p0_slope > p1_slope)
+				return 1;
+			else if (p0_slope == p1_slope)
+				return 0;
+			else
+				return 1;
+		}
+
+	}
+
 	/**
 	 * Compares two points by the slope they make with this point. The slope is
 	 * defined as in the slopeTo() method.
@@ -110,7 +126,7 @@ public class Point implements Comparable<Point> {
 	 */
 	public Comparator<Point> slopeOrder() {
 		/* YOUR CODE HERE */
-
+		return new SlopeCompare();
 	}
 
 	/**
