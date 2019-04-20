@@ -11,13 +11,30 @@ public class BruteCollinearPoints {
 			throw new java.lang.IllegalArgumentException();
 		int n_points = points.length;
 		for (int i = 0; i < n_points - 3; i++) {
+
 			for (int j = i + 1; j < n_points - 2; j++) {
+				Point min, max;
+				if (points[i] == null || points[j] == null)
+					throw new java.lang.IllegalArgumentException();
 				double slope = points[i].slopeTo(points[j]);
-				if (slope == Double.NEGATIVE_INFINITY)
+				if (points[i].compareTo(points[j]) == 1) {
+					min = points[j];
+					max = points[i];
+				} else if (points[i].compareTo(points[j]) == -1) {
+					min = points[i];
+					max = points[j];
+				} else
 					throw new java.lang.IllegalArgumentException();
 				for (int k = j + 1; k < n_points - 1; k++) {
-					if (points[i] == null || points[j] == null || points[k] == null)
+
+					if (points[k] == null)
 						throw new java.lang.IllegalArgumentException();
+
+					if (min.compareTo(points[k]) == 1)
+						min = points[k];
+					else if (max.compareTo(points[k]) == -1)
+						max = points[k];
+
 					if (points[i].slopeTo(points[k]) == Double.NEGATIVE_INFINITY
 							|| points[k].slopeTo(points[j]) == Double.NEGATIVE_INFINITY)
 						throw new java.lang.IllegalArgumentException();
@@ -26,12 +43,17 @@ public class BruteCollinearPoints {
 						for (int l = k + 1; l < n_points; l++) {
 							if (points[l] == null)
 								throw new java.lang.IllegalArgumentException();
+							if (min.compareTo(points[l]) == 1)
+								min = points[l];
+							else if (max.compareTo(points[l]) == -1)
+								max = points[l];
+
 							if (points[i].slopeTo(points[l]) == Double.NEGATIVE_INFINITY
 									|| points[l].slopeTo(points[j]) == Double.NEGATIVE_INFINITY
 									|| points[l].slopeTo(points[k]) == Double.NEGATIVE_INFINITY)
 								throw new java.lang.IllegalArgumentException();
 							if (slope == points[i].slopeTo(points[l]))
-								lines.add(new LineSegment(points[i], points[l]));
+								lines.add(new LineSegment(min, max));
 						}
 					}
 				}
