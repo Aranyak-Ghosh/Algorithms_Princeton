@@ -10,7 +10,7 @@ public class BruteCollinearPoints {
 		if (points == null)
 			throw new java.lang.IllegalArgumentException();
 		int n_points = points.length;
-		lines = new LineSegment[n_points * n_points];
+		LineSegment[] temp = new LineSegment[n_points * n_points];
 		size = 0;
 		for (int i = 0; i < n_points - 3; i++) {
 
@@ -42,7 +42,7 @@ public class BruteCollinearPoints {
 									|| points[l].slopeTo(points[k]) == Double.NEGATIVE_INFINITY)
 								throw new java.lang.IllegalArgumentException();
 							if (slope == points[i].slopeTo(points[l])) {
-								lines[size] = new LineSegment(pt[0], pt[3]);
+								temp[size] = new LineSegment(pt[0], pt[3]);
 								size++;
 							}
 						}
@@ -51,7 +51,7 @@ public class BruteCollinearPoints {
 			}
 
 		}
-		resize();
+		resize(temp);
 	}
 
 	public int numberOfSegments() // the number of line segments
@@ -64,10 +64,10 @@ public class BruteCollinearPoints {
 		return lines;
 	}
 
-	private void resize() {
-		LineSegment[] temp = new LineSegment[size];
+	private void resize(LineSegment[] temp) {
+		lines = new LineSegment[size];
 		for (int i = 0; i < this.size; i++)
-			temp[i] = lines[i];
-		lines = temp;
+			lines[i] = temp[i];
+
 	}
 }
