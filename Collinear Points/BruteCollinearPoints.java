@@ -1,39 +1,30 @@
-import java.util.ArrayList;
+import java.util.Arrays;
 
 public class BruteCollinearPoints {
 
-	ArrayList<LineSegment> lines;
+	LineSegment[] lines;
+	int size;
 
 	public BruteCollinearPoints(Point[] points) // finds all line segments containing 4 points
 	{
-		lines = new ArrayList<LineSegment>();
 		if (points == null)
 			throw new java.lang.IllegalArgumentException();
 		int n_points = points.length;
+		lines = new LineSegment[n_points * n_points];
+		size = 0;
 		for (int i = 0; i < n_points - 3; i++) {
 
 			for (int j = i + 1; j < n_points - 2; j++) {
-				Point min, max;
 				if (points[i] == null || points[j] == null)
 					throw new java.lang.IllegalArgumentException();
 				double slope = points[i].slopeTo(points[j]);
-				if (points[i].compareTo(points[j]) == 1) {
-					min = points[j];
-					max = points[i];
-				} else if (points[i].compareTo(points[j]) == -1) {
-					min = points[i];
-					max = points[j];
-				} else
+				if (points[i].compareTo(points[j]) == 0)
 					throw new java.lang.IllegalArgumentException();
+
 				for (int k = j + 1; k < n_points - 1; k++) {
 
 					if (points[k] == null)
 						throw new java.lang.IllegalArgumentException();
-
-					if (min.compareTo(points[k]) == 1)
-						min = points[k];
-					else if (max.compareTo(points[k]) == -1)
-						max = points[k];
 
 					if (points[i].slopeTo(points[k]) == Double.NEGATIVE_INFINITY
 							|| points[k].slopeTo(points[j]) == Double.NEGATIVE_INFINITY)
@@ -43,32 +34,40 @@ public class BruteCollinearPoints {
 						for (int l = k + 1; l < n_points; l++) {
 							if (points[l] == null)
 								throw new java.lang.IllegalArgumentException();
-							if (min.compareTo(points[l]) == 1)
-								min = points[l];
-							else if (max.compareTo(points[l]) == -1)
-								max = points[l];
+							Point[] pt = { points[i], points[j], points[k], points[l] };
+							Arrays.sort(pt);
 
 							if (points[i].slopeTo(points[l]) == Double.NEGATIVE_INFINITY
 									|| points[l].slopeTo(points[j]) == Double.NEGATIVE_INFINITY
 									|| points[l].slopeTo(points[k]) == Double.NEGATIVE_INFINITY)
 								throw new java.lang.IllegalArgumentException();
-							if (slope == points[i].slopeTo(points[l]))
-								lines.add(new LineSegment(min, max));
+							if (slope == points[i].slopeTo(points[l])) {
+								lines[size] = new LineSegment(pt[0], pt[3]);
+								size++;
+							}
 						}
 					}
 				}
 			}
 
 		}
+		resize();
 	}
 
 	public int numberOfSegments() // the number of line segments
 	{
-		return lines.size();
+		return size;
 	}
 
 	public LineSegment[] segments() // the line segments
 	{
-		return (LineSegment[]) lines.toArray();
+		return lines;
+	}
+
+	private void resize() {
+		LineSegment[] temp = new LineSegment[size];
+		for (int i = 0; i < this.size; i++)
+			temp[i] = lines[i];
+		lines = temp;
 	}
 }
