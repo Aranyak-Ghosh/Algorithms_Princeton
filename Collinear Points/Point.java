@@ -72,6 +72,8 @@ public class Point implements Comparable<Point> {
 			slope = Double.NEGATIVE_INFINITY;
 		else if (x_diff == 0)
 			slope = Double.POSITIVE_INFINITY;
+		else if (y_diff == 0)
+			slope = 0.0;
 		else
 			slope = (double) y_diff / x_diff;
 		return slope;
