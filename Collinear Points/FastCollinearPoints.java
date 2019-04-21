@@ -4,13 +4,14 @@ import java.util.Collections;
 
 public class FastCollinearPoints {
 	private final LineSegment[] lines;
-	private int size;
+	private final int size;
 
 	public FastCollinearPoints(Point[] points) // finds all line segments containing 4 or more points
 	{
 		validatePoints(points);
 		int n_points = points.length;
 		Point[] copy = points.clone();
+		int count = 0;
 		LineSegment[] temp = new LineSegment[n_points * n_points];
 		for (int i = 0; i < n_points - 3; i++) {
 			ArrayList<Point> linear = new ArrayList<Point>();
@@ -34,13 +35,14 @@ public class FastCollinearPoints {
 
 				if (linear.size() > 3) {
 					Collections.sort(linear);
-					temp[size++] = new LineSegment(linear.get(0), linear.get(linear.size() - 1));
+					temp[count++] = new LineSegment(linear.get(0), linear.get(linear.size() - 1));
 				}
 				end = end + linear.size() - 1;
 				linear.clear();
 
 			}
 		}
+		size = count;
 		lines = new LineSegment[size];
 		for (int i = 0; i < this.size; i++)
 			lines[i] = temp[i];
@@ -67,6 +69,6 @@ public class FastCollinearPoints {
 
 	public LineSegment[] segments() // the line segments
 	{
-		return lines;
+		return lines.clone();
 	}
 }

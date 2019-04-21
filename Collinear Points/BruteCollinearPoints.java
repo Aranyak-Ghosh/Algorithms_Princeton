@@ -3,14 +3,14 @@ import java.util.Arrays;
 public class BruteCollinearPoints {
 
 	private final LineSegment[] lines;
-	private int size;
+	private final int size;
 
 	public BruteCollinearPoints(Point[] points) // finds all line segments containing 4 points
 	{
 		validatePoints(points);
 		int n_points = points.length;
 		LineSegment[] temp = new LineSegment[n_points * n_points];
-		size = 0;
+		int count = 0;
 		for (int i = 0; i < n_points - 3; i++) {
 
 			for (int j = i + 1; j < n_points - 2; j++) {
@@ -24,8 +24,8 @@ public class BruteCollinearPoints {
 							if (slope == points[i].slopeTo(points[l])) {
 								Point[] pt = { points[i], points[j], points[k], points[l] };
 								Arrays.sort(pt);
-								temp[size] = new LineSegment(pt[0], pt[3]);
-								size++;
+								temp[count] = new LineSegment(pt[0], pt[3]);
+								count++;
 							}
 						}
 					}
@@ -33,6 +33,7 @@ public class BruteCollinearPoints {
 			}
 
 		}
+		size = count;
 		lines = new LineSegment[size];
 		for (int i = 0; i < this.size; i++)
 			lines[i] = temp[i];
@@ -46,7 +47,7 @@ public class BruteCollinearPoints {
 
 	public LineSegment[] segments() // the line segments
 	{
-		return lines;
+		return lines.clone();
 	}
 
 	private void validatePoints(Point[] points) {
