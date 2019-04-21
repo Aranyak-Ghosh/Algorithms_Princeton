@@ -11,6 +11,7 @@ public class FastCollinearPoints {
 		validatePoints(points);
 		int n_points = points.length;
 		Point[] copy = points.clone();
+		Point[][] pairs = new Point[n_points * n_points][2];
 		int count = 0;
 		LineSegment[] temp = new LineSegment[n_points * n_points];
 		for (int i = 0; i < n_points - 3; i++) {
@@ -35,8 +36,21 @@ public class FastCollinearPoints {
 
 				if (linear.size() > 3) {
 					Collections.sort(linear);
-					temp[count++] = new LineSegment(linear.get(0), linear.get(linear.size() - 1));
+					boolean include = true;
+					for (int x = 0; x < count; x++) {
+						if (pairs[x][0].compareTo(linear.get(0)) == 0
+								&& pairs[x][1].compareTo(linear.get(linear.size() - 1)) == 0) {
+							include = false;
+							break;
+						}
+					}
+					if (include) {
+						pairs[count][0] = linear.get(0);
+						pairs[count][1] = linear.get(linear.size() - 1);
+						temp[count++] = new LineSegment(pairs[count][0], pairs[count][1]);
+					}
 				}
+
 				end = end + linear.size() - 1;
 				linear.clear();
 
