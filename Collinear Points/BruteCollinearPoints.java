@@ -11,18 +11,20 @@ public class BruteCollinearPoints {
 		int n_points = points.length;
 		LineSegment[] temp = new LineSegment[n_points * n_points];
 		int count = 0;
+		Point[] copy = new Point[points.length];
+		System.arraycopy(points, 0, copy, 0, points.length);
 		for (int i = 0; i < n_points - 3; i++) {
 
 			for (int j = i + 1; j < n_points - 2; j++) {
 
-				double slope = points[i].slopeTo(points[j]);
+				double slope = copy[i].slopeTo(points[j]);
 
 				for (int k = j + 1; k < n_points - 1; k++) {
 
-					if (slope == points[i].slopeTo(points[k])) {
+					if (slope == copy[i].slopeTo(points[k])) {
 						for (int l = k + 1; l < n_points; l++) {
-							if (slope == points[i].slopeTo(points[l])) {
-								Point[] pt = { points[i], points[j], points[k], points[l] };
+							if (slope == copy[i].slopeTo(copy[l])) {
+								Point[] pt = { copy[i], copy[j], copy[k], copy[l] };
 								Arrays.sort(pt);
 								temp[count] = new LineSegment(pt[0], pt[3]);
 								count++;
