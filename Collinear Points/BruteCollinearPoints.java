@@ -58,10 +58,12 @@ public class BruteCollinearPoints {
 		for (Point p : points)
 			if (p == null)
 				throw new java.lang.IllegalArgumentException();
-		Arrays.sort(points);
+		Point[] copy = new Point[points.length];
+		System.arraycopy(points, 0, copy, 0, points.length);
+		Arrays.sort(copy);
 		int n_points = points.length;
 		for (int i = 0; i < n_points - 1; i++)
-			if (points[i].compareTo(points[i + 1]) == 0)
+			if (copy[i].compareTo(copy[i + 1]) == 0)
 				throw new java.lang.IllegalArgumentException();
 	}
 }
