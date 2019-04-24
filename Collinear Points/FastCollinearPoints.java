@@ -18,28 +18,28 @@ public class FastCollinearPoints {
 			ArrayList<Point> linear = new ArrayList<Point>();
 
 			// Sort the array based on slope
-			Arrays.sort(points, copy[i].slopeOrder());
+			Arrays.sort(copy, points[i].slopeOrder());
 			int end = 0;
 
 			while (end < n_points - 2) {
 				int j = end + 1;
 
 				// If the end point is the same as initial point ignore it
-				if (points[end].compareTo(copy[i]) == 0) {
+				if (copy[end].compareTo(points[i]) == 0) {
 					end++;
 					continue;
 				}
 
 				// Add the initial two points to the list
-				linear.add(copy[i]);
-				linear.add(points[end]);
+				linear.add(points[i]);
+				linear.add(copy[end]);
 
 				// Calculate slope
-				double slope = copy[i].slopeTo(points[end]);
+				double slope = points[i].slopeTo(copy[end]);
 
 				// Find all points with the same slope and add to the list
-				while (j < n_points && copy[i].slopeTo(points[j]) == slope) {
-					linear.add(points[j]);
+				while (j < n_points && points[i].slopeTo(copy[j]) == slope) {
+					linear.add(copy[j]);
 					j++;
 				}
 
@@ -81,10 +81,12 @@ public class FastCollinearPoints {
 		for (Point p : points)
 			if (p == null)
 				throw new java.lang.IllegalArgumentException();
-		Arrays.sort(points);
+		Point[] copy = new Point[points.length];
+		System.arraycopy(points, 0, copy, 0, points.length);
+		Arrays.sort(copy);
 		int n_points = points.length;
 		for (int i = 0; i < n_points - 1; i++)
-			if (points[i].compareTo(points[i + 1]) == 0)
+			if (copy[i].compareTo(copy[i + 1]) == 0)
 				throw new java.lang.IllegalArgumentException();
 	}
 
