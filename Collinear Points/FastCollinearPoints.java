@@ -8,10 +8,11 @@ public class FastCollinearPoints {
 
 	public FastCollinearPoints(Point[] points) // finds all line segments containing 4 or more points
 	{
-		validatePoints(points);
+		checkNull(points);
 		int n_points = points.length;
 		Point[] copy = new Point[n_points];
 		System.arraycopy(points, 0, copy, 0, points.length);
+		checkDuplicates(copy);
 		Point[][] pairs = new Point[n_points * n_points][2];
 		int count = 0;
 		for (int i = 0; i < n_points - 3; i++) {
@@ -75,19 +76,21 @@ public class FastCollinearPoints {
 
 	}
 
-	private void validatePoints(Point[] points) {
+	private void checkNull(Point[] points) {
 		if (points == null)
 			throw new java.lang.IllegalArgumentException();
 		for (Point p : points)
 			if (p == null)
 				throw new java.lang.IllegalArgumentException();
-		Point[] copy = new Point[points.length];
-		System.arraycopy(points, 0, copy, 0, points.length);
-		Arrays.sort(copy);
+	}
+	
+	private void checkDuplicates(Point[] points) {
+		Arrays.sort(points);
 		int n_points = points.length;
 		for (int i = 0; i < n_points - 1; i++)
-			if (copy[i].compareTo(copy[i + 1]) == 0)
+			if (points[i].compareTo(points[i + 1]) == 0)
 				throw new java.lang.IllegalArgumentException();
+
 	}
 
 	public int numberOfSegments() // the number of line segments
