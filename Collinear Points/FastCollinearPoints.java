@@ -21,7 +21,7 @@ public class FastCollinearPoints {
 			Arrays.sort(points, copy[i].slopeOrder());
 			int end = 0;
 
-			while (end < n_points - 3) {
+			while (end < n_points - 2) {
 				int j = end + 1;
 
 				// If the end point is the same as initial point ignore it
