@@ -1,7 +1,9 @@
 import java.util.Comparator;
 
+import edu.princeton.cs.algs4.In;
 import edu.princeton.cs.algs4.MinPQ;
 import edu.princeton.cs.algs4.Stack;
+import edu.princeton.cs.algs4.StdOut;
 
 public class Solver {
 	private class Node {
@@ -23,7 +25,7 @@ public class Solver {
 	private final Stack<Board> solution;
 	private boolean solvable;
 
-	private class Priority implements Comparator<Node> {
+	private class ManhattanPriority implements Comparator<Node> {
 
 		@Override
 		public int compare(Node x, Node y) {
@@ -44,6 +46,27 @@ public class Solver {
 
 	}
 
+	private class HammingPriority implements Comparator<Node> {
+
+		@Override
+		public int compare(Node x, Node y) {
+			int x_dist = x.steps + x.board.hamming();
+			int y_dist = y.steps + y.board.hamming();
+
+			if (x_dist == y_dist) {
+				if (x.board.hamming() < y.board.hamming())
+					return -1;
+				else if (x.board.hamming() > y.board.hamming())
+					return 1;
+				return 0;
+			} else if (x_dist < y_dist)
+				return -1;
+			else
+				return 1;
+		}
+
+	}
+
 	public Solver(Board initial) {
 		// TODO Auto-generated constructor stub
 		solvable = true;
@@ -53,8 +76,8 @@ public class Solver {
 
 		Node node = new Node(initial, 0, null);
 		Node node_twin = new Node(initial.twin(), 0, null);
-		heap = new MinPQ<Node>(new Priority());
-		heap_twin = new MinPQ<Node>(new Priority());
+		heap = new MinPQ<Node>(new HammingPriority());
+		heap_twin = new MinPQ<Node>(new HammingPriority());
 		heap.insert(node);
 		heap_twin.insert(node_twin);
 
@@ -66,9 +89,10 @@ public class Solver {
 			}
 
 			node = heap.delMin();
-			if (node.board.isGoal())
+			if (node.board.isGoal()) {
 				generateStack(node);
-			else {
+				break;
+			} else {
 				Node child, child_twin;
 				Iterable<Board> neighbors = node.board.neighbors();
 				Iterable<Board> neighbors_twin = node_twin.board.neighbors();
@@ -89,7 +113,7 @@ public class Solver {
 						heap.insert(child);
 					}
 				}
-				
+
 				for (Board b : neighbors_twin) {
 					if (addChild_twin) {
 						if (node_twin.parent != null && node_twin.board.equals(b)) {
@@ -134,4 +158,32 @@ public class Solver {
 			return null;
 	}
 
+	// Test Client
+	public static void main(String[] args) {
+		String file;
+		if (args.length > 0)
+			file = args[0];
+		else
+			file = "D:\\Data Structures And Algorithms\\workspace\\8Puzzle\\SampleIO\\puzzle3x3-01.txt";
+		// create initial board from file
+		In in = new In(file);
+		int n = in.readInt();
+		int[][] blocks = new int[n][n];
+		for (int i = 0; i < n; i++)
+			for (int j = 0; j < n; j++)
+				blocks[i][j] = in.readInt();
+		Board initial = new Board(blocks);
+
+		// solve the puzzle
+		Solver solver = new Solver(initial);
+
+		// print solution to standard output
+		if (!solver.isSolvable())
+			StdOut.println("No solution possible");
+		else {
+			StdOut.println("Minimum number of moves = " + solver.moves());
+			for (Board board : solver.solution())
+				StdOut.println(board);
+		}
+	}
 }
