@@ -3,8 +3,12 @@ import edu.princeton.cs.algs4.Queue;
 public class Board {
 	private int[][] board;
 	private int length;
+	private int hamming;
+	private int manhattan;
 
 	public Board(int[][] board) {
+		hamming = -1;
+		manhattan = -1;
 		this.length = board.length;
 		this.board = new int[length][length];
 		for (int i = 0; i < length; i++)
@@ -17,27 +21,33 @@ public class Board {
 	}
 
 	public int hamming() {
-		int distance = 0;
-		for (int i = 0; i < length; i++) {
-			for (int j = 0; j < length; j++)
-				if (!(i == length - 1 && j == length - 1))
-					if (board[i][j] != (length * i + j + 1))
-						distance++;
+		if (hamming == -1) {
+			int distance = 0;
+			for (int i = 0; i < length; i++) {
+				for (int j = 0; j < length; j++)
+					if (!(i == length - 1 && j == length - 1))
+						if (board[i][j] != (length * i + j + 1))
+							distance++;
+			}
+			hamming = distance;
 		}
-		return distance;
+		return hamming;
 	}
 
 	public int manhattan() {
-		int distance = 0;
-		for (int i = 0; i < length; i++) {
-			for (int j = 0; j < length; j++) {
-				if (board[i][j] != 0) {
-					distance += Math.abs(i - (board[i][j] - 1) / length);
-					distance += Math.abs(j - (board[i][j] - 1) % length);
+		if (manhattan == -1) {
+			int distance = 0;
+			for (int i = 0; i < length; i++) {
+				for (int j = 0; j < length; j++) {
+					if (board[i][j] != 0) {
+						distance += Math.abs(i - (board[i][j] - 1) / length);
+						distance += Math.abs(j - (board[i][j] - 1) % length);
+					}
 				}
 			}
+			manhattan = distance;
 		}
-		return distance;
+		return manhattan;
 	}
 
 	public Board twin() {
