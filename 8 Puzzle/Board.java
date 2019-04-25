@@ -32,8 +32,8 @@ public class Board {
 		for (int i = 0; i < length; i++) {
 			for (int j = 0; j < length; j++) {
 				if (board[i][j] != 0) {
-					distance += Math.abs(i - board[i][j] / length);
-					distance += Math.abs(j - board[i][j] % length);
+					distance += Math.abs(i - (board[i][j] - 1) / length);
+					distance += Math.abs(j - (board[i][j] - 1) % length);
 				}
 			}
 		}
