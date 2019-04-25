@@ -22,17 +22,18 @@ public class Solver {
 
 	private final MinPQ<Node> heap;
 	private final MinPQ<Node> heap_twin;
-	private final Stack<Board> solution;
+	private Stack<Board> solution;
 	private boolean solvable;
+	private int steps;
 
 	private class ManhattanPriority implements Comparator<Node> {
 
 		@Override
 		public int compare(Node x, Node y) {
-			
-			int x_man=x.board.manhattan();
-			int y_man=y.board.manhattan();
-			
+
+			int x_man = x.board.manhattan();
+			int y_man = y.board.manhattan();
+
 			int x_dist = x.steps + x_man;
 			int y_dist = y.steps + y_man;
 
@@ -75,8 +76,6 @@ public class Solver {
 
 	public Solver(Board initial) {
 		// TODO Auto-generated constructor stub
-		solvable = true;
-		solution = new Stack<Board>();
 		if (initial == null)
 			throw new IllegalArgumentException();
 
@@ -87,56 +86,38 @@ public class Solver {
 		heap.insert(node);
 		heap_twin.insert(node_twin);
 
-		while (!heap.isEmpty()) {
-			node_twin = heap_twin.delMin();
-			if (node_twin.board.isGoal()) {
-				solvable = false;
-				break;
+		while (!node.board.isGoal() && !node_twin.board.isGoal()) {
+			Iterable<Board> neighbors = node.board.neighbors();
+			Iterable<Board> neighbors_twin = node_twin.board.neighbors();
+
+			for (Board b : neighbors) {
+				if (node.parent == null || !b.equals(node.parent.board)) {
+					heap.insert(new Node(b, node.steps + 1, node));
+				}
 			}
 
 			node = heap.delMin();
-			if (node.board.isGoal()) {
-				generateStack(node);
-				break;
-			} else {
-				Node child, child_twin;
-				Iterable<Board> neighbors = node.board.neighbors();
-				Iterable<Board> neighbors_twin = node_twin.board.neighbors();
-				boolean addChild, addChild_twin;
-				addChild = true;
-				addChild_twin = true;
-				for (Board b : neighbors) {
-					if (addChild) {
-						if (node.parent != null && node.board.equals(b)) {
-							addChild = false;
-							continue;
-						} else {
-							child = new Node(b, node.steps + 1, node);
-							heap.insert(child);
-						}
-					} else {
-						child = new Node(b, node.steps + 1, node);
-						heap.insert(child);
-					}
-				}
 
-				for (Board b : neighbors_twin) {
-					if (addChild_twin) {
-						if (node_twin.parent != null && node_twin.board.equals(b)) {
-							addChild_twin = false;
-							continue;
-						} else {
-							child_twin = new Node(b, node_twin.steps + 1, node_twin);
-							heap_twin.insert(child_twin);
-						}
-					} else {
-						child_twin = new Node(b, node_twin.steps + 1, node_twin);
-						heap_twin.insert(child_twin);
-					}
+			for (Board b : neighbors_twin) {
+				if (node_twin.parent == null || !b.equals(node_twin.parent.board)) {
+					heap_twin.insert(new Node(b, node_twin.steps + 1, node_twin));
 				}
 			}
-
+			node_twin = heap_twin.delMin();
 		}
+		if (node_twin.board.isGoal()) {
+			this.solvable = false;
+			this.solution = null;
+			this.steps = -1;
+		}
+
+		if (node.board.isGoal()) {
+			this.solvable = true;
+			this.solution = new Stack<Board>();
+			generateStack(node);
+			this.steps = solution.size() - 1;
+		}
+
 	}
 
 	private void generateStack(Node node) {
@@ -151,17 +132,11 @@ public class Solver {
 	}
 
 	public int moves() {
-		if (solvable)
-			return solution.size() - 1;
-		else
-			return -1;
+		return this.steps;
 	}
 
 	public Iterable<Board> solution() {
-		if (solvable)
-			return solution;
-		else
-			return null;
+		return solution;
 	}
 
 	// Test Client
@@ -170,7 +145,7 @@ public class Solver {
 		if (args.length > 0)
 			file = args[0];
 		else
-			file = "D:\\Data Structures And Algorithms\\workspace\\8Puzzle\\SampleIO\\puzzle23.txt";
+			file = "D:\\Data Structures And Algorithms\\workspace\\8Puzzle\\SampleIO\\puzzle27.txt";
 		// create initial board from file
 		In in = new In(file);
 		int n = in.readInt();
