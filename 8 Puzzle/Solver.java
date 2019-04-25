@@ -29,13 +29,17 @@ public class Solver {
 
 		@Override
 		public int compare(Node x, Node y) {
-			int x_dist = x.steps + x.board.manhattan();
-			int y_dist = y.steps + y.board.manhattan();
+			
+			int x_man=x.board.manhattan();
+			int y_man=y.board.manhattan();
+			
+			int x_dist = x.steps + x_man;
+			int y_dist = y.steps + y_man;
 
 			if (x_dist == y_dist) {
-				if (x.board.manhattan() < y.board.manhattan())
+				if (x_man < y_man)
 					return -1;
-				else if (x.board.manhattan() > y.board.manhattan())
+				else if (x_man > y_man)
 					return 1;
 				return 0;
 			} else if (x_dist < y_dist)
@@ -50,13 +54,15 @@ public class Solver {
 
 		@Override
 		public int compare(Node x, Node y) {
-			int x_dist = x.steps + x.board.hamming();
-			int y_dist = y.steps + y.board.hamming();
+			int x_ham = x.board.hamming();
+			int y_ham = y.board.hamming();
+			int x_dist = x.steps + x_ham;
+			int y_dist = y.steps + y_ham;
 
 			if (x_dist == y_dist) {
-				if (x.board.hamming() < y.board.hamming())
+				if (x_ham < y_ham)
 					return -1;
-				else if (x.board.hamming() > y.board.hamming())
+				else if (x_ham > y_ham)
 					return 1;
 				return 0;
 			} else if (x_dist < y_dist)
@@ -76,8 +82,8 @@ public class Solver {
 
 		Node node = new Node(initial, 0, null);
 		Node node_twin = new Node(initial.twin(), 0, null);
-		heap = new MinPQ<Node>(new HammingPriority());
-		heap_twin = new MinPQ<Node>(new HammingPriority());
+		heap = new MinPQ<Node>(new ManhattanPriority());
+		heap_twin = new MinPQ<Node>(new ManhattanPriority());
 		heap.insert(node);
 		heap_twin.insert(node_twin);
 
@@ -164,7 +170,7 @@ public class Solver {
 		if (args.length > 0)
 			file = args[0];
 		else
-			file = "D:\\Data Structures And Algorithms\\workspace\\8Puzzle\\SampleIO\\puzzle3x3-01.txt";
+			file = "D:\\Data Structures And Algorithms\\workspace\\8Puzzle\\SampleIO\\puzzle23.txt";
 		// create initial board from file
 		In in = new In(file);
 		int n = in.readInt();
