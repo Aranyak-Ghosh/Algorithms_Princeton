@@ -21,13 +21,13 @@ private TreeSet<Point2D> tree;
     
     // add the point to the set (if it is not already in the set)
     public void insert(Point2D p) {
-        if (p == null) throw new NullPointerException();
+        if (p == null) throw new IllegalArgumentException ();
         if (contains(p)) return;
         tree.add(p);
     }
     
     public boolean contains(Point2D p) {
-        if (p == null) throw new NullPointerException();
+        if (p == null) throw new IllegalArgumentException ();
         return tree.contains(p);
     }
     
@@ -39,7 +39,7 @@ private TreeSet<Point2D> tree;
     
     // all points that are inside the rectangle 
     public Iterable<Point2D> range(RectHV rect) {
-        if (rect == null) throw new NullPointerException();
+        if (rect == null) throw new IllegalArgumentException();
         
         Queue<Point2D> q = new Queue<Point2D>();
         for (Point2D p : tree) {
@@ -51,7 +51,7 @@ private TreeSet<Point2D> tree;
     
     // a nearest neighbor in the set to point p; null if the set is empty 
     public Point2D nearest(Point2D p) {
-        if (p == null) throw new NullPointerException();
+        if (p == null) throw new IllegalArgumentException();
         
         if (isEmpty()) return null;
         
